@@ -1,0 +1,29 @@
+{
+  "intents": [
+    {
+      "intent": "StartGameIntent"
+    },
+    {
+      "intent": "PickCardIntent",
+      "slots":[
+        {
+          "name": "Row",
+          "type": "AMAZON.NUMBER"
+        },
+        {
+          "name": "Col",
+          "type": "AMAZON.NUMBER"
+        }
+      ]
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+StartGameIntent start game
+StartGameIntent start over
+StartGameIntent restart
+StartGameIntent restart game
+StartGameIntent new game
+StartGameIntent begin again
+
+PickCardIntent row {Row} column {Col}
+PickCardIntent row {Row} {Col}
+PickCardIntent {Row} column {Col}
+PickCardIntent {Row} {Col}
+PickCardIntent how about row {Row} column {Col}
+PickCardIntent how about row {Row} {Col}
+PickCardIntent how about {Row} column {Col}
+PickCardIntent how about {Row} {Col}
+PickCardIntent is it row {Row} column {Col}
+PickCardIntent is it row {Row} {Col}
+PickCardIntent is it {Row} column {Col}
+PickCardIntent is it {Row} {Col}
+PickCardIntent let's try row {Row} column {Col}
+PickCardIntent let's try row {Row} {Col}
+PickCardIntent let's try {Row} column {Col}
+PickCardIntent let's try {Row} {Col}
+PickCardIntent try row {Row} column {Col}
+PickCardIntent try row {Row} {Col}
+PickCardIntent try {Row} column {Col}
+PickCardIntent try {Row} {Col}
+PickCardIntent turn over row {Row} column {Col}
+PickCardIntent turn over row {Row} {Col}
+PickCardIntent turn over {Row} column {Col}
+PickCardIntent turn over {Row} {Col}
