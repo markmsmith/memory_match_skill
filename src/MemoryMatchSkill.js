@@ -44,7 +44,6 @@ const RETRY_MESSAGE = "Sorry, I didn't understand, please try again.";
  *                      Cancel (exit)
  *                      StartGame (StartingGame)
  *                      StartOver (StartingGame)
- *                      PickCard (explain game is finished, then StartingGame)
  *                      Help
  */
 export default class MemoryMatchSkill extends AlexaSkill {
