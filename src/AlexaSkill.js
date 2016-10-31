@@ -17,7 +17,7 @@ function AlexaSkill(appId) {
 AlexaSkill.speechOutputType = {
     PLAIN_TEXT: 'PlainText',
     SSML: 'SSML'
-}
+};
 
 AlexaSkill.prototype.requestHandlers = {
     LaunchRequest: function (event, context, response) {
@@ -81,13 +81,11 @@ AlexaSkill.prototype.eventHandlers = {
  */
 AlexaSkill.prototype.intentHandlers = {};
 
-AlexaSkill.prototype.execute = function (event, context) {
+AlexaSkill.prototype.execute = function (event, context, callback) {
     try {
-        console.log("session applicationId: " + event.session.application.applicationId);
-
         // Validate that this request originated from authorized source.
         if (this._appId && event.session.application.applicationId !== this._appId) {
-            console.log("The applicationIds don't match : " + event.session.application.applicationId + " and "
+            console.error("The applicationIds don't match : " + event.session.application.applicationId + " and "
                 + this._appId);
             throw "Invalid applicationId";
         }
@@ -102,19 +100,23 @@ AlexaSkill.prototype.execute = function (event, context) {
 
         // Route the request to the proper handler which may have been overriden.
         var requestHandler = this.requestHandlers[event.request.type];
-        requestHandler.call(this, event, context, new Response(context, event.session));
+        requestHandler.call(this, event, context, new Response(context, event.session, callback));
     } catch (e) {
-        console.log("Unexpected exception " + e);
+        console.error("Unexpected exception " + e);
+        console.error("Stack trace:\n" + e.stack);
         context.fail(e);
     }
 };
 
-var Response = function (context, session) {
+var Response = function (context, session, callback) {
     this._context = context;
     this._session = session;
+
+    // TODO Switch to using the callback instead of the context
+    this._callback = callback;
 };
 
-function createSpeechObject(optionsParam) {
+function createSpeechObject (optionsParam) {
     if (optionsParam && optionsParam.type === 'SSML') {
         return {
             type: optionsParam.type,
@@ -124,7 +126,7 @@ function createSpeechObject(optionsParam) {
         return {
             type: optionsParam.type || 'PlainText',
             text: optionsParam.speech || optionsParam
-        }
+        };
     }
 }
 
@@ -147,8 +149,8 @@ Response.prototype = (function () {
             };
         }
         var returnResult = {
-                version: '1.0',
-                response: alexaResponse
+            version: '1.0',
+            response: alexaResponse
         };
         if (options.session && options.session.attributes) {
             returnResult.sessionAttributes = options.session.attributes;
@@ -181,6 +183,20 @@ Response.prototype = (function () {
                 shouldEndSession: false
             }));
         },
+
+        buildSpeechOutput: function (speechText, speechType){
+            return {
+                speech: speechText,
+                type: speechType || AlexaSkill.speechOutputType.PLAIN_TEXT
+            };
+        },
+
+        // TODO may not need this and can just supply string as speechOutput
+        askPlain: function (speechText, repromptText) {
+            var speechOutput = this.buildSpeechOutput(speechText);
+            var repromptOutput = this.buildSpeechOutput(repromptText || speechText);
+            this.ask(speechOutput, repromptOutput);
+        },
         askWithCard: function (speechOutput, repromptSpeech, cardTitle, cardContent) {
             this._context.succeed(buildSpeechletResponse({
                 session: this._session,
@@ -190,6 +206,16 @@ Response.prototype = (function () {
                 cardContent: cardContent,
                 shouldEndSession: false
             }));
+        },
+        askWithCardPlain: function (speechText, repromptText, cardTitle, cardContent) {
+            var speechOutput = this.buildSpeechOutput(speechText);
+            var repromptOutput = this.buildSpeechOutput(repromptText || speechText);
+            this.askWithCard(speechOutput, repromptOutput, cardTitle, cardContent);
+        },
+        askWithCardSSML: function (speechText, repromptText, cardTitle, cardContent) {
+            var speechOutput = this.buildSpeechOutput(speechText, AlexaSkill.speechOutputType.SSML);
+            var repromptOutput = this.buildSpeechOutput(repromptText || speechText, AlexaSkill.speechOutputType.SSML);
+            this.askWithCard(speechOutput, repromptOutput, cardTitle, cardContent);
         }
     };
 })();

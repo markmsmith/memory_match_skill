@@ -1,0 +1,5 @@
+--require babel-register
+--require chai
+--require test/helpers.js
+--ui tdd
+--reporter spec

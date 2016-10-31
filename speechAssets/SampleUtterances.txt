@@ -1,9 +1,13 @@
 StartGameIntent start game
-StartGameIntent start over
-StartGameIntent restart
-StartGameIntent restart game
 StartGameIntent new game
-StartGameIntent begin again
+
+AMAZON.StartOverIntent start over
+AMAZON.StartOverIntent restart
+AMAZON.StartOverIntent restart game
+AMAZON.StartOverIntent begin again
+
+AMAZON.StopIntent exit
+AMAZON.StopIntent stop
 
 PickCardIntent row {Row} column {Col}
 PickCardIntent row {Row} {Col}

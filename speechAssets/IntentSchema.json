@@ -4,6 +4,9 @@
       "intent": "StartGameIntent"
     },
     {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
       "intent": "PickCardIntent",
       "slots":[
         {
@@ -20,7 +23,13 @@
       "intent": "AMAZON.HelpIntent"
     },
     {
-      "intent": "AMAZON.StopIntent"
+      "intent": "AMAZON.StartOverIntent"
+    },
+    {
+      "intent": "AMAZON.YesIntent"
+    },
+    {
+      "intent": "AMAZON.NoIntent"
     },
     {
       "intent": "AMAZON.CancelIntent"
