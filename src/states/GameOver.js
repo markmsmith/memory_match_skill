@@ -2,7 +2,8 @@ import State from '../State.js';
 import * as Intents from '../intents';
 import StartingGame from './StartingGame';
 
-const repromptText = "Would you like to play again? You can answer 'yes' to start a new game or 'no' to quit.";
+const repromptText = "<speak>Would you like to play again? You can answer 'yes' to start a new game or 'no' to quit." +
+                     '</speak>';
 
 /**
  * Represents when all the pairs have been matched and the user has the option of starting a new game.
@@ -19,7 +20,7 @@ export class GameOver extends State {
         const cardTitle = 'Memory Match';
         const cardContent = 'You Won!\n' +
             `Number of moves: ${numMoves}`;
-        response.askWithCardSSML(speechText, repromptText, cardTitle, cardContent);
+        response.askWithCardSSML(`<speak>${speechText}</speak>`, repromptText, cardTitle, cardContent);
     }
 
     buildIntentHandlers() {

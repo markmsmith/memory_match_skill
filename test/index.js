@@ -305,14 +305,14 @@ suite('index.js', function(){
             'response': {
                 'outputSpeech': {
                     'type': 'SSML',
-                    'ssml': `blue star. That's a match! You won in just 12 moves!. <break time="1s" />` +
-                            `You can start a new game by saying, 'new game', or quit by saying, 'exit'.`
+                    'ssml': `<speak>blue star. That's a match! You won in just 12 moves!. <break time="1s" />` +
+                            `You can start a new game by saying, 'new game', or quit by saying, 'exit'.</speak>`
                 },
                 'reprompt': {
                     'outputSpeech': {
                         'type': 'SSML',
-                        'ssml': "Would you like to play again? You can answer 'yes' to start a new game or 'no' to " +
-                                'quit.'
+                        'ssml': "<speak>Would you like to play again? You can answer 'yes' to start a new game or 'no'"+
+                                ' to quit.</speak>'
                     }
                 },
                 'shouldEndSession': false
