@@ -1,5 +1,5 @@
 # memory_match_skill
-An Alexa skill that let's you play a memory match game, where you match pairs of cards.
+An Alexa skill that lets you play a memory match game, where you match pairs of cards.
 
 ## Development
 This project uses [Yarn](https://github.com/yarnpkg/yarn) for it's package management, but you can use npm if you prefer.
