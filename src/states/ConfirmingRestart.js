@@ -7,11 +7,11 @@ import ALL_STATES from './index';
  */
 export class ConfirmingRestart extends State {
 
-    static enter(session, response){
+    static enter(session, response, speechText=''){
         session.attributes.previousStateName = session.attributes.stateName;
         session.attributes.stateName = this.name;
 
-        const speechText = 'Are you sure you wish to abandon the current game and start a new one?';
+        speechText += 'Are you sure you wish to abandon the current game and start a new one?';
         const repromptText = "Are you sure you want to restart?  You can answer 'yes' to start a new game, " +
             "'no' or 'cancel' to continue playing, or 'exit' to quit playing.";
         response.askPlain(speechText, repromptText);

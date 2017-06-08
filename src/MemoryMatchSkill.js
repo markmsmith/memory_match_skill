@@ -1,7 +1,7 @@
 import AlexaSkill from './AlexaSkill';
 import ALL_STATES from './states';
-import { START_GAME_INTENT } from './intents';
-
+import * as Itents from './intents';
+const { START_GAME_INTENT, HELP_INTENT, ALL_INTENTS } = Itents;
 const StartingGame = ALL_STATES.StartingGame;
 
 const SKILL_PROBLEM_MESSAGE = "I'm sorry, there was a problem with this skill, please try again later.";
@@ -64,22 +64,44 @@ export default class MemoryMatchSkill extends AlexaSkill {
         const intentObj = intentRequest.intent;
         const intentName = intentObj.name;
 
-        // get the state that matches that requested by the session
-        var state = this.getState(session);
+        // check we got a valid intent
+        if ( ALL_INTENTS.indexOf(intentName) == -1 ){
+            console.error('Got unrecognized intent:\n' +
+                          `${JSON.stringify(intentRequest)}\n` +
+                          'With session:\n'+
+                          JSON.stringify(session));
+            response.tell("Sorry, I don't recognize that command, please try again.");
+            return;
+        }
 
-        if (!state) {
-            // if we don't find it, maybe we launched with a start game request
-            if (intentName === START_GAME_INTENT) {
+        const stateName = (session.attributes && session.attributes.stateName) ? session.attributes.stateName : null;
+
+        // no state name, must be in a new game
+        if (!stateName) {
+            // if we don't find it, maybe we launched with a start game or help request
+            if (intentName === START_GAME_INTENT || intentName === HELP_INTENT) {
                 StartingGame.enter(session, response);
                 return;
             } else {
-                console.error('Valid state not set for intent:\n' +
-                            `${JSON.stringify(intentRequest)}\n` +
-                            'With session:\n'+
-                            JSON.stringify(session));
-                response.tell(SKILL_PROBLEM_MESSAGE);
+                // they used an intent when it wasn't valid
+                var speechText = "Sorry, you can't use that command command until we've started playing. ";
+                StartingGame.enter(session, response, speechText);
                 return;
             }
+        }
+
+        // get the state that matches that requested by the session
+        var state = this.getState(stateName);
+
+        // make sure we got a state
+        if(!state){
+            // we must have screwed up somehow
+            console.error('Got unrecognized state, with intent:\n' +
+                          `${JSON.stringify(intentRequest)}\n` +
+                          'session:\n'+
+                          JSON.stringify(session));
+            response.tell(SKILL_PROBLEM_MESSAGE);
+            return;
         }
 
         try {
@@ -99,11 +121,11 @@ export default class MemoryMatchSkill extends AlexaSkill {
         }
     }
 
-    getState(session) {
+    getState(stateName) {
         // check if we know about the requested state
-        if (session.attributes && session.attributes.stateName && ALL_STATES[session.attributes.stateName]) {
+        if (stateName && ALL_STATES[stateName]) {
             // construct it
-            return new ALL_STATES[session.attributes.stateName]();
+            return new ALL_STATES[stateName]();
         }
 
         // no matching state found

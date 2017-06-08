@@ -112,6 +112,153 @@ suite('index.js', function(){
         result.sessionAttributes.cards.should.all.have.lengthOf(3);
     });
 
+    test('it should respond to a HelpIntent', function(){
+        const startGameRequest = {
+            'session': {
+                'sessionId': 'SessionId.81b4840e-6dff-4487-9047-9d60f6de786d',
+                'application': {
+                    'applicationId': 'amzn1.ask.skill.a224d45d-3af6-42ab-a6d5-6f6d029d7932'
+                },
+                'attributes': {},
+                'user': {
+                    'userId': 'amzn1.ask.account.AFWDXWUEUYBQPDHYHZPUANTX2KKMVQQC4LNTA24AZ4AJFQV4TAXCROGTQX5JNUEEQUADCLGV6P74TKFVUH4DUEGJNLHFYS7CKXY5UBEB5VRYPVTQFJU76ZDF2C3PAV5KSJMDZDNAKF2FON2N3XMILOD56UGLYJWU2PN7QJFOCRVJTABK4I5TTGBNFYSBAKSZIPMVNQXKJUQBCFI'
+                },
+                'new': true
+            },
+            'request': {
+                'type': 'IntentRequest',
+                'requestId': 'EdwRequestId.1ea3bcd9-abb9-48ac-8be4-1dd649b9880b',
+                'locale': 'en-US',
+                'timestamp': '2016-11-03T03:29:17Z',
+                'intent': {
+                    'name': 'AMAZON.HelpIntent',
+                    'slots': {}
+                }
+            },
+            'version': '1.0'
+        };
+
+        index(startGameRequest, mockContext, callbackSpy);
+
+        mockContext.succeed.should.be.calledOnce;
+        var result = mockContext.succeed.getCall(0).args[0];
+
+        result.should.containSubset({
+            response: EXPECTED_START_GAME_RESPONSE
+        });
+
+        should.exist(result.sessionAttributes);
+        result.sessionAttributes.should.containSubset({
+            stateName: 'PickingFirstCard',
+            moveCount: 0,
+            cardsRemaining: 12
+        });
+        expect(result.sessionAttributes.cards).to.exist;
+
+        // should have 4 rows of cards
+        result.sessionAttributes.cards.length.should.eql(4);
+        // should have 3 columns of cards in each row
+        result.sessionAttributes.cards.should.all.have.lengthOf(3);
+    });
+
+    test('it should handle an unrecognized intent', function(){
+        const unrecognizedIntentRequest = {
+            'session': {
+                'sessionId': 'SessionId.81b4840e-6dff-4487-9047-9d60f6de786d',
+                'application': {
+                    'applicationId': 'amzn1.ask.skill.a224d45d-3af6-42ab-a6d5-6f6d029d7932'
+                },
+                'attributes': {},
+                'user': {
+                    'userId': 'amzn1.ask.account.AFWDXWUEUYBQPDHYHZPUANTX2KKMVQQC4LNTA24AZ4AJFQV4TAXCROGTQX5JNUEEQUADCLGV6P74TKFVUH4DUEGJNLHFYS7CKXY5UBEB5VRYPVTQFJU76ZDF2C3PAV5KSJMDZDNAKF2FON2N3XMILOD56UGLYJWU2PN7QJFOCRVJTABK4I5TTGBNFYSBAKSZIPMVNQXKJUQBCFI'
+                },
+                'new': true
+            },
+            'request': {
+                'type': 'IntentRequest',
+                'requestId': 'EdwRequestId.1ea3bcd9-abb9-48ac-8be4-1dd649b9880b',
+                'locale': 'en-US',
+                'timestamp': '2016-11-03T03:29:17Z',
+                'intent': {
+                    'name': 'FooIntent',
+                    'slots': {}
+                }
+            },
+            'version': '1.0'
+        };
+
+        index(unrecognizedIntentRequest, mockContext, callbackSpy);
+
+        mockContext.succeed.should.be.calledOnce;
+        var result = mockContext.succeed.getCall(0).args[0];
+
+        result.should.containSubset({
+            response: {
+                outputSpeech: {
+                    text: "Sorry, I don't recognize that command, please try again."
+                },
+                shouldEndSession: true
+            }
+        });
+    });
+
+    test('it should respond to a PickCardIntent on new session', function(){
+        const helpRequest = {
+            'session': {
+                'sessionId': 'SessionId.01540968-4cbc-4a92-a269-ebdde7a01379',
+                'application': {
+                    'applicationId': 'amzn1.ask.skill.a224d45d-3af6-42ab-a6d5-6f6d029d7932'
+                },
+                'attributes': {},
+                'user': {
+                    'userId': 'amzn1.ask.account.AFWDXWUEUYBQPDHYHZPUANTX2KKMVQQC4LNTA24AZ4AJFQV4TAXCROGTQX5JNUEEQUAD' +
+                        'CLGV6P74TKFVUH4DUEGJNLHFYS7CKXY5UBEB5VRYPVTQFJU76ZDF2C3PAV5KSJMDZDNAKF2FON2N3XMILOD56UGLYJWU' +
+                        '2PN7QJFOCRVJTABK4I5TTGBNFYSBAKSZIPMVNQXKJUQBCFI'
+                },
+                'new': true
+            },
+            'request': {
+                'type': 'IntentRequest',
+                'requestId': 'EdwRequestId.b2ffedf2-f1a8-4b74-81da-1c0e12e48bb3',
+                'locale': 'en-US',
+                'timestamp': '2016-10-30T21:39:11Z',
+                'intent': {
+                    'name': 'PickCardIntent',
+                    'slots': {}
+                }
+            },
+            'version': '1.0'
+        };
+
+        index(helpRequest, mockContext, callbackSpy);
+
+        mockContext.succeed.should.be.calledOnce;
+        var result = mockContext.succeed.getCall(0).args[0];
+
+        result.should.containSubset({
+            response: {
+                outputSpeech: {
+                    text: "Sorry, you can't use that command command until we've started playing. " +
+                        EXPECTED_START_GAME_RESPONSE.outputSpeech.text
+                },
+                shouldEndSession: false
+            }
+        });
+
+        should.exist(result.sessionAttributes);
+        result.sessionAttributes.should.containSubset({
+            stateName: 'PickingFirstCard',
+            moveCount: 0,
+            cardsRemaining: 12
+        });
+        expect(result.sessionAttributes.cards).to.exist;
+
+        // should have 4 rows of cards
+        result.sessionAttributes.cards.length.should.eql(4);
+        // should have 3 columns of cards in each row
+        result.sessionAttributes.cards.should.all.have.lengthOf(3);
+    });
+
     test('it should respond to a PickingFirstCardIntent', function(){
         const pickFirstCardRequest = createRequest({
             'cards': [
@@ -180,6 +327,64 @@ suite('index.js', function(){
             stateName: 'PickingSecondCard',
             moveCount: 1,
             cardsRemaining: 12
+        });
+    });
+
+    test('it should respond to a invalidStateIntent', function(){
+        const invalidStateRequest = createRequest({
+            'cards': [
+                [
+                    'blue square',
+                    'blue square',
+                    'red triangle'
+                ],
+                [
+                    'red triangle',
+                    'blue square',
+                    'pink star'
+                ],
+                [
+                    'green star',
+                    'green star',
+                    'blue star'
+                ],
+                [
+                    'pink star',
+                    'blue star',
+                    'blue square'
+                ]
+            ],
+            'stateName': 'FooState',
+            'cardsRemaining': 12,
+            'moveCount': 0,
+            'intent': {
+                'name': 'PickCardIntent',
+                'slots': {
+                    'Col': {
+                        'name': 'Col',
+                        'value': '1'
+                    },
+                    'Row': {
+                        'name': 'Row',
+                        'value': '1'
+                    }
+                }
+            }
+        });
+
+        index(invalidStateRequest, mockContext, callbackSpy);
+
+        mockContext.succeed.should.be.calledOnce;
+        var result = mockContext.succeed.getCall(0).args[0];
+
+        result.should.containSubset({
+            'response': {
+                'outputSpeech': {
+                    'type': 'PlainText',
+                    'text': "I'm sorry, there was a problem with this skill, please try again later."
+                },
+                'shouldEndSession': true
+            }
         });
     });
 

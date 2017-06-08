@@ -10,10 +10,8 @@ const repromptText = "<speak>Would you like to play again? You can answer 'yes' 
  */
 export class GameOver extends State {
 
-    static enter(session, response, speechText) {
+    static enter(session, response, speechText='') {
         session.attributes.stateName = this.name;
-
-        speechText = speechText || '';
         const numMoves = session.attributes.moveCount;
         speechText += ` You won in just ${numMoves} moves!. <break time="1s" />` +
             `You can start a new game by saying, 'new game', or quit by saying, 'exit'.`;

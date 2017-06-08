@@ -12,8 +12,7 @@ const REPROMPT_TEXT = 'You can make a guess like, row 1, column 1, or say exit t
  */
 export class PickingFirstCard extends State {
 
-    static enter(session, response, speechText) {
-        speechText = speechText || '';
+    static enter(session, response, speechText='') {
         session.attributes.stateName = this.name;
         speechText += ` There are ${session.attributes.cardsRemaining} cards remaining. What's your next guess?`;
         response.askPlain(speechText, REPROMPT_TEXT);

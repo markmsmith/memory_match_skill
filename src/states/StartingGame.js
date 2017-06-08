@@ -28,9 +28,9 @@ const SHORT_START_GAME = "Ok, new game ready.  What's your first card?";
  */
 export class StartingGame extends State {
 
-    static enter(session, response) {
+    static enter(session, response, speechText='') {
         // just give them the short intro if this isn't their first game this session
-        var speechText = session.new ? START_GAME_TEXT : SHORT_START_GAME;
+        speechText += session.new ? START_GAME_TEXT : SHORT_START_GAME;
 
         // Reprompt speech will be triggered if the user doesn't respond.
         var repromptText = 'You can start guessing by saying, row 1, column 1, or exit to stop playing.';
