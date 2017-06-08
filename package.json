@@ -1,7 +1,7 @@
 {
   "name": "memory_match_skill",
   "version": "1.0.0",
-  "description": "An Alexa skill that let's you play a memory match game, where you match pairs of cards.",
+  "description": "An Alexa skill that lets you play a memory match game, where you match pairs of cards.",
   "main": "index.js",
   "repository": {
     "url": "https://github.com/markmsmith/memory_match_skill",

@@ -21,7 +21,7 @@ import MemoryMatchSkill from './MemoryMatchSkill';
 /**
  * App ID for the skill
  */
-const APP_ID = 'amzn1.ask.skill.a224d45d-3af6-42ab-a6d5-6f6d029d7932';
+const APP_ID = process.env.APP_ID;
 
 // Create the handler that responds to the Alexa Request.
 export function handler(event, context, callback) {
